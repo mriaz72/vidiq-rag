@@ -143,6 +143,5 @@ def extract_all_audio() -> list:
     return results
 
 
-# ── Run directly ──────────────────────────────────────────────────────────
 if __name__ == "__main__":
     extract_all_audio()
