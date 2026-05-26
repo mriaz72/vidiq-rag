@@ -775,6 +775,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/4a/c9/db44165ba7c581268c6d46017ef63339110378305062830104fc7fa144cb/google_auth-2.53.0-py3-none-any.whl", hash = "sha256:6e7449917c599b35126a99ec268ec6880301f2fea41dce198fe8fd83ff642b68", size = 246071, upload-time = "2026-05-15T20:53:05.609Z" },
 ]
 
+[package.optional-dependencies]
+requests = [
+    { name = "requests" },
+]
+
 [[package]]
 name = "google-auth-httplib2"
 version = "0.4.0"
@@ -786,6 +791,27 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/1c/b3/f192c8bc7e41e0ebdbd95afcae4783417a34b6a6af62d22daf22c3fd38fc/google_auth_httplib2-0.4.0.tar.gz", hash = "sha256:d5b030a204b7a4b4d553ba9ca701b62481ee2b74419325580be70f7d85ffed35", size = 11161, upload-time = "2026-05-07T08:03:46.878Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/97/be/954c35a62b9e31de66b0a43c225c9b6bb9e0f98d6b1dc110a2308e3644f5/google_auth_httplib2-0.4.0-py3-none-any.whl", hash = "sha256:8e55cfafa3358cba85f6cad4a886138e88e158d71e7e5c9ee5936a5c1507fb91", size = 9529, upload-time = "2026-05-07T08:02:12.375Z" },
+]
+
+[[package]]
+name = "google-genai"
+version = "2.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "google-auth", extra = ["requests"] },
+    { name = "httpx" },
+    { name = "pydantic" },
+    { name = "requests" },
+    { name = "sniffio" },
+    { name = "tenacity" },
+    { name = "typing-extensions" },
+    { name = "websockets" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/dd/ec/6e49f50f5c70588d97c6ed25e0b8c18828bf4d58895f397b53a7522168a1/google_genai-2.6.0.tar.gz", hash = "sha256:7d4f777234002f2e94be499dbdfb43b506a6aca9dbbec13e61d3dc6ce640ffa7", size = 554809, upload-time = "2026-05-22T01:34:33.581Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/9e/e8ba4e58a9d5daf42343f3ea1cb0efb721eba36a1d6624e9873d039a5c1e/google_genai-2.6.0-py3-none-any.whl", hash = "sha256:272b6f6320f5d355735241ad441f972af095ec80dc10cb075cb430d96721648a", size = 821003, upload-time = "2026-05-22T01:34:31.55Z" },
 ]
 
 [[package]]
@@ -3068,6 +3094,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "chromadb" },
     { name = "ffmpeg-python" },
+    { name = "google-genai" },
     { name = "google-generativeai" },
     { name = "groq" },
     { name = "opencv-python" },
@@ -3083,6 +3110,7 @@ dependencies = [
 requires-dist = [
     { name = "chromadb", specifier = ">=1.5.9" },
     { name = "ffmpeg-python", specifier = ">=0.2.0" },
+    { name = "google-genai", specifier = ">=2.6.0" },
     { name = "google-generativeai", specifier = ">=0.8.6" },
     { name = "groq", specifier = ">=1.2.0" },
     { name = "opencv-python", specifier = ">=4.13.0.92" },
