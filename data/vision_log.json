@@ -1,0 +1,78 @@
+[
+  {
+    "id": "video_01",
+    "title": "FAQ 1 - Consequences of Unpaid Payroll Deductions",
+    "url": "https://rumble.com/v6zkyo6-faq-1-what-are-the-consequenses-of-unpaid-payroll-deductions.html",
+    "status": "skipped",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_01_vision.json"
+  },
+  {
+    "id": "video_02",
+    "title": "FAQ 2 - Behind on Payroll Source Deduction Payments",
+    "url": "https://rumble.com/v6zl04g-faq-2-what-do-i-do-if-i-am-behind-on-payroll-source-deduction-payments.html",
+    "status": "skipped",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_02_vision.json"
+  },
+  {
+    "id": "video_03",
+    "title": "FAQ 3 - Negotiate Payment Plan with CRA",
+    "url": "https://rumble.com/v6zla9a-faq-3-can-i-negotiate-a-payment-plan-with-the-canada-revenue-agency.html",
+    "status": "skipped",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_03_vision.json"
+  },
+  {
+    "id": "video_04",
+    "title": "FAQ 4 - CRA Interest and Fees While Negotiating",
+    "url": "https://rumble.com/v6zmb2y-faq-4-do-cra-interest-and-fees-keep-accruing-while-i-am-negotiating-my-taxe.html",
+    "status": "skipped",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_04_vision.json"
+  },
+  {
+    "id": "video_05",
+    "title": "FAQ 5 - Legal Rights When Dealing with CRA",
+    "url": "https://rumble.com/v6zmbtk-faq-5-what-are-my-legal-rights-when-dealing-with-the-cra.html",
+    "status": "skipped",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_05_vision.json"
+  },
+  {
+    "id": "video_06",
+    "title": "FAQ 7 - Payroll Debt and Financing Ability",
+    "url": "https://rumble.com/v6zmcuu-faq-7-how-does-my-payroll-debt-affect-my-ability-to-gain-financing.html",
+    "status": "skipped",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_06_vision.json"
+  },
+  {
+    "id": "video_07",
+    "title": "FAQ 8 - How to Walk Away from Payroll Debt",
+    "url": "https://rumble.com/v6zmd6y-faq-8-how-do-i-walk-away-from-my-payroll-debt.html",
+    "status": "skipped",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_07_vision.json"
+  },
+  {
+    "id": "video_08",
+    "title": "FAQ 9 - What Happens if You Ignore CRA Payroll Debt",
+    "url": "https://rumble.com/v6zmdm6-faq-9-what-happens-if-i-ignore-cra-payroll-debt.html",
+    "status": "success",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_08_vision.json",
+    "total_frames": 7,
+    "frames_with_content": 7
+  },
+  {
+    "id": "video_09",
+    "title": "FAQ 10 - Who to Turn to for CRA Payroll Problems",
+    "url": "https://rumble.com/v6zme3o-faq-10-who-do-i-turn-to-to-fix-cra-payroll-problems.html",
+    "status": "success",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_09_vision.json",
+    "total_frames": 4,
+    "frames_with_content": 4
+  },
+  {
+    "id": "video_10",
+    "title": "Video 10 - Gobind Trades",
+    "url": "https://rumble.com/v6x7q9w-418585028.html",
+    "status": "success",
+    "vision_file": "C:\\Users\\mriaz\\Desktop\\vidiq-rag\\visual_analysis\\video_10_vision.json",
+    "total_frames": 10,
+    "frames_with_content": 10
+  }
+]
