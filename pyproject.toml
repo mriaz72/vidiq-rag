@@ -16,5 +16,6 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "scenedetect>=0.7",
     "sentence-transformers>=5.5.1",
+    "streamlit>=1.57.0",
     "yt-dlp>=2026.3.17",
 ]
