@@ -184,7 +184,7 @@ def retrieve(query: str, collection, embedder, n: int = 4) -> list:
     )
 
     # Use more chunks for broad/summary questions
-    fetch_n = 8 if is_broad else n
+    fetch_n = 3 if is_broad else n
 
     emb = embedder.encode(
         query,
