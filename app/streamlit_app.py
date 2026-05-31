@@ -122,14 +122,25 @@ def load_groq():
 
 #System prompt
 SYSTEM_PROMPT = """You are a knowledge assistant built from video content.
+You have access to transcripts, on-screen text, and visual descriptions 
+from a series of videos about Canadian tax and CRA payroll issues.
 
 STRICT RULES:
 1. Answer ONLY from the context provided below.
 2. Do NOT use your general knowledge under any circumstances.
-3. If the answer is not found in the context, respond with exactly:
+3. If the answer is truly not found in the context, respond with:
    "I don't know based on the provided video content."
-4. Every answer MUST cite the video title and timestamp.
+4. Always cite the video title and timestamp in your answer.
 5. Be concise and direct.
+
+TYPES OF QUESTIONS YOU CAN ANSWER:
+- Specific questions: "What does CRA do if I ignore payroll debt?"
+- Summary questions: "What is video 4 mainly about?" or 
+  "Summarize this video"
+- Topic questions: "Which video talks about payment plans?"
+- Comparison questions: "What is the difference between FAQ 1 and FAQ 2?"
+- List questions: "What are all the consequences mentioned?"
+- Explanation questions: "Explain what the speaker said about financing"
 
 SEMANTIC MATCHING RULES:
 - If the user asks about "penalties" look for consequences, enforcement,
@@ -140,17 +151,41 @@ SEMANTIC MATCHING RULES:
   solutions, ways to handle in the context.
 - If the user asks about "cost" look for fees, interest, charges,
   amounts, rates in the context.
-- If the user asks about "contact" look for who should i turn to, departments, agencies,
-  professionals in the context.
+- If the user asks about "video 4" or "FAQ 4" look for content from
+  that specific video in the context.
 - Generally: look for the MEANING of the question, not just exact words.
 - If the context contains information that answers the question even with
-  different wording, USE IT to answer."""
+  different wording, USE IT to answer.
+
+FOR SUMMARY QUESTIONS:
+- Read all provided context carefully
+- Identify the main topic and key points
+- Structure your answer as a brief summary with bullet points
+- Always mention which video the summary is from"""
 
 
 
 
 # ── Retrieve chunks
 def retrieve(query: str, collection, embedder, n: int = 4) -> list:
+
+    # Detect if this is a summary or broad question
+    # These need more chunks to give a complete answer
+    broad_keywords = [
+        "summarize", "summary", "mainly about", "what is video",
+        "what does video", "overview", "explain video", "tell me about",
+        "what topics", "what does faq", "all consequences",
+        "everything about", "what was discussed"
+    ]
+
+    is_broad = any(
+        keyword in query.lower()
+        for keyword in broad_keywords
+    )
+
+    # Use more chunks for broad/summary questions
+    fetch_n = 8 if is_broad else n
+
     emb = embedder.encode(
         query,
         normalize_embeddings=True
@@ -158,7 +193,7 @@ def retrieve(query: str, collection, embedder, n: int = 4) -> list:
 
     results = collection.query(
         query_embeddings=[emb],
-        n_results=n
+        n_results=fetch_n
     )
 
     chunks = []
