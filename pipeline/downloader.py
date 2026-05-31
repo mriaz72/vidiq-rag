@@ -94,7 +94,7 @@ def download_video(video: dict) -> dict:
 
     # Skip if already downloaded
     if os.path.exists(output_path) and os.path.getsize(output_path) > 10_000:
-        print(f"  ✅ Already downloaded, skipping.")
+        print(f"   Already downloaded, skipping.")
         return {**video, "status": "skipped", "file": output_path}
 
     # Try primary method
@@ -102,16 +102,16 @@ def download_video(video: dict) -> dict:
 
     # Try fallback if primary failed
     if not success:
-        print(f"  ⚠️  Primary failed. Trying fallback...")
+        print(f"    Primary failed. Trying fallback...")
         success = download_with_curl_fallback(url, output_path)
 
     # Final result
     if success and os.path.exists(output_path):
         size_mb = os.path.getsize(output_path) / (1024 * 1024)
-        print(f"  ✅ Downloaded successfully ({size_mb:.1f} MB)")
+        print(f"  Downloaded successfully ({size_mb:.1f} MB)")
         return {**video, "status": "success", "file": output_path}
     else:
-        print(f"  ❌ FAILED — manual intervention needed for: {url}")
+        print(f"   FAILED — manual intervention needed for: {url}")
         return {**video, "status": "failed", "file": None}
 
 
@@ -120,7 +120,7 @@ def download_all_videos() -> list:
     with open(DATA_FILE, "r") as f:
         videos = json.load(f)
 
-    print(f"\n🎬 Starting download of {len(videos)} videos...\n")
+    print(f"\n Starting download of {len(videos)} videos...\n")
 
     results = []
     for video in videos:
@@ -135,12 +135,12 @@ def download_all_videos() -> list:
     print(f"\n{'═'*55}")
     print(f"  DOWNLOAD SUMMARY")
     print(f"{'═'*55}")
-    print(f"  ✅ Downloaded : {len(success)}")
-    print(f"  ⏭️  Skipped    : {len(skipped)} (already existed)")
-    print(f"  ❌ Failed     : {len(failed)}")
+    print(f"   Downloaded : {len(success)}")
+    print(f"    Skipped    : {len(skipped)} (already existed)")
+    print(f"   Failed     : {len(failed)}")
 
     if failed:
-        print(f"\n  ⚠️  The following videos need manual attention:")
+        print(f"\n   The following videos need manual attention:")
         for v in failed:
             print(f"     - {v['id']} : {v['url']}")
 
@@ -150,7 +150,7 @@ def download_all_videos() -> list:
     log_path = BASE_DIR / "data" / "download_log.json"
     with open(log_path, "w") as f:
         json.dump(results, f, indent=2)
-    print(f"  📄 Download log saved to: {log_path}\n")
+    print(f"  Download log saved to: {log_path}\n")
 
     return results
 

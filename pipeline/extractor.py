@@ -3,14 +3,14 @@ import json
 import subprocess
 from pathlib import Path
 
-# ── Paths ────────────────────────────────────────────────────────────────
+#Paths
 BASE_DIR  = Path(__file__).resolve().parent.parent
 VIDEO_DIR = BASE_DIR / "videos"
 AUDIO_DIR = BASE_DIR / "audio"
 DATA_FILE = BASE_DIR / "data" / "videos.json"
 AUDIO_DIR.mkdir(exist_ok=True)
 
-# ── Check ffmpeg is installed ─────────────────────────────────────────────
+#Check ffmpeg is installed 
 def check_ffmpeg():
     try:
         result = subprocess.run(
@@ -18,17 +18,17 @@ def check_ffmpeg():
             capture_output=True, text=True
         )
         if result.returncode == 0:
-            print("  ✅ ffmpeg is available")
+            print("  ffmpeg is available")
             return True
     except FileNotFoundError:
         pass
-    print("  ❌ ffmpeg not found. Please install it and add to PATH.")
+    print(" ffmpeg not found. Please install it and add to PATH.")
     print("     Windows: winget install ffmpeg")
     print("     Or download from: https://ffmpeg.org/download.html")
     return False
 
 
-# ── Extract audio from a single video ────────────────────────────────────
+# Extract audio from a single video 
 def extract_audio(video: dict) -> dict:
     video_id   = video["id"]
     title      = video["title"]
@@ -41,16 +41,16 @@ def extract_audio(video: dict) -> dict:
 
     # Check video file exists
     if not video_path.exists():
-        print(f"  ❌ Video file not found: {video_path}")
+        print(f"   Video file not found: {video_path}")
         print(f"     Make sure {video_id}.mp4 is in the videos/ folder")
         return {**video, "status": "failed", "audio_file": None}
 
     # Skip if already extracted
     if audio_path.exists() and audio_path.stat().st_size > 1000:
-        print(f"  ✅ Audio already extracted, skipping.")
+        print(f"   Audio already extracted, skipping.")
         return {**video, "status": "skipped", "audio_file": str(audio_path)}
 
-    print(f"  🎵 Extracting audio from {video_id}.mp4 ...")
+    print(f"   Extracting audio from {video_id}.mp4 ...")
 
     try:
         # ffmpeg command:
@@ -78,25 +78,25 @@ def extract_audio(video: dict) -> dict:
         )
 
         if result.returncode != 0:
-            print(f"  ❌ ffmpeg error:\n{result.stderr[-500:]}")
+            print(f"   ffmpeg error:\n{result.stderr[-500:]}")
             return {**video, "status": "failed", "audio_file": None}
 
         # Verify output file
         if not audio_path.exists() or audio_path.stat().st_size < 1000:
-            print(f"  ❌ Audio file missing or empty after extraction")
+            print(f"  Audio file missing or empty after extraction")
             return {**video, "status": "failed", "audio_file": None}
 
         size_mb = audio_path.stat().st_size / (1024 * 1024)
-        print(f"  ✅ Audio extracted successfully ({size_mb:.1f} MB)")
+        print(f"  Audio extracted successfully ({size_mb:.1f} MB)")
         print(f"     Saved to: audio/{video_id}.wav")
         return {**video, "status": "success", "audio_file": str(audio_path)}
 
     except Exception as e:
-        print(f"  ❌ Unexpected error: {e}")
+        print(f"   Unexpected error: {e}")
         return {**video, "status": "failed", "audio_file": None}
 
 
-# ── Extract audio from all videos ────────────────────────────────────────
+# Extract audio from all videos 
 def extract_all_audio() -> list:
 
     # Check ffmpeg first
@@ -114,7 +114,7 @@ def extract_all_audio() -> list:
         result = extract_audio(video)
         results.append(result)
 
-    # ── Summary ──────────────────────────────────────────────────────────
+    # Summary 
     success = [r for r in results if r["status"] == "success"]
     skipped = [r for r in results if r["status"] == "skipped"]
     failed  = [r for r in results if r["status"] == "failed"]
@@ -122,12 +122,12 @@ def extract_all_audio() -> list:
     print(f"\n{'═'*55}")
     print(f"  AUDIO EXTRACTION SUMMARY")
     print(f"{'═'*55}")
-    print(f"  ✅ Extracted : {len(success)}")
-    print(f"  ⏭️  Skipped   : {len(skipped)} (already existed)")
-    print(f"  ❌ Failed    : {len(failed)}")
+    print(f"   Extracted : {len(success)}")
+    print(f"    Skipped   : {len(skipped)} (already existed)")
+    print(f"   Failed    : {len(failed)}")
 
     if failed:
-        print(f"\n  ⚠️  Failed videos:")
+        print(f"\n   Failed videos:")
         for v in failed:
             print(f"     - {v['id']} : {v['title']}")
             print(f"       Make sure {v['id']}.mp4 exists in videos/ folder")
@@ -138,7 +138,7 @@ def extract_all_audio() -> list:
     log_path = BASE_DIR / "data" / "audio_log.json"
     with open(log_path, "w") as f:
         json.dump(results, f, indent=2)
-    print(f"  📄 Log saved to: data/audio_log.json\n")
+    print(f"  Log saved to: data/audio_log.json\n")
 
     return results
 

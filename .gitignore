@@ -8,7 +8,7 @@ videos/
 audio/
 
 # Vector database
-vectorstore/
+#vectorstore/
 
 # Python cache
 __pycache__/
