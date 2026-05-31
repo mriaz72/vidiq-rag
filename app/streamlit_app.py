@@ -122,21 +122,32 @@ def load_groq():
 
 #System prompt
 SYSTEM_PROMPT = """You are a knowledge assistant built from video content.
-You have access to transcripts, on-screen text, and visual descriptions 
+You have access to transcripts, on-screen text, and visual descriptions
 from a series of videos about Canadian tax and CRA payroll issues.
 
 STRICT RULES:
 1. Answer ONLY from the context provided below.
 2. Do NOT use your general knowledge under any circumstances.
-3. If the answer is truly not found in the context, respond with:
+3. If the answer is truly not found in the context, respond with exactly:
    "I don't know based on the provided video content."
 4. Always cite the video title and timestamp in your answer.
 5. Be concise and direct.
 
+VIDEO NAME MAPPING — use this to understand user references:
+- "Video 1" or "video 1" = FAQ 1 = Consequences of Unpaid Payroll Deductions
+- "Video 2" or "video 2" = FAQ 2 = Behind on Payroll Source Deduction Payments
+- "Video 3" or "video 3" = FAQ 3 = Negotiate Payment Plan with CRA
+- "Video 4" or "video 4" = FAQ 4 = CRA Interest and Fees While Negotiating
+- "Video 5" or "video 5" = FAQ 5 = Legal Rights When Dealing with CRA
+- "Video 6" or "video 6" = FAQ 7 = Payroll Debt and Financing Ability
+- "Video 7" or "video 7" = FAQ 8 = How to Walk Away from Payroll Debt
+- "Video 8" or "video 8" = FAQ 9 = What Happens if You Ignore CRA Payroll Debt
+- "Video 9" or "video 9" = FAQ 10 = Who to Turn to for CRA Payroll Problems
+- "Video 10" or "video 10" = Gobind Trades general video
+
 TYPES OF QUESTIONS YOU CAN ANSWER:
 - Specific questions: "What does CRA do if I ignore payroll debt?"
-- Summary questions: "What is video 4 mainly about?" or 
-  "Summarize this video"
+- Summary questions: "What is video 4 mainly about?" or "Summarize this video"
 - Topic questions: "Which video talks about payment plans?"
 - Comparison questions: "What is the difference between FAQ 1 and FAQ 2?"
 - List questions: "What are all the consequences mentioned?"
@@ -151,8 +162,6 @@ SEMANTIC MATCHING RULES:
   solutions, ways to handle in the context.
 - If the user asks about "cost" look for fees, interest, charges,
   amounts, rates in the context.
-- If the user asks about "video 4" or "FAQ 4" look for content from
-  that specific video in the context.
 - Generally: look for the MEANING of the question, not just exact words.
 - If the context contains information that answers the question even with
   different wording, USE IT to answer.
@@ -163,38 +172,136 @@ FOR SUMMARY QUESTIONS:
 - Structure your answer as a brief summary with bullet points
 - Always mention which video the summary is from"""
 
+# Video number mapping
+VIDEO_MAP = {
+    # video_01
+    "video 1"        : "video_01",
+    "video1"         : "video_01",
+    "faq 1"          : "video_01",
+    "faq1"           : "video_01",
+    "consequences"   : "video_01",
+    "unpaid payroll" : "video_01",
+
+    # video_02
+    "video 2"        : "video_02",
+    "video2"         : "video_02",
+    "faq 2"          : "video_02",
+    "faq2"           : "video_02",
+    "behind on payroll": "video_02",
+    "source deduction": "video_02",
+
+    # video_03
+    "video 3"        : "video_03",
+    "video3"         : "video_03",
+    "faq 3"          : "video_03",
+    "faq3"           : "video_03",
+    "payment plan"   : "video_03",
+    "negotiate"      : "video_03",
+
+    # video_04
+    "video 4"        : "video_04",
+    "video4"         : "video_04",
+    "faq 4"          : "video_04",
+    "faq4"           : "video_04",
+    "interest and fees": "video_04",
+    "accruing"       : "video_04",
+
+    # video_05
+    "video 5"        : "video_05",
+    "video5"         : "video_05",
+    "faq 5"          : "video_05",
+    "faq5"           : "video_05",
+    "legal rights"   : "video_05",
+
+    # video_06
+    "video 6"        : "video_06",
+    "video6"         : "video_06",
+    "faq 6"          : "video_06",
+    "faq6"           : "video_06",
+    "faq 7"          : "video_06",
+    "faq7"           : "video_06",
+    "financing"      : "video_06",
+    "payroll debt affect": "video_06",
+
+    # video_07
+    "video 7"        : "video_07",
+    "video7"         : "video_07",
+    "faq 7th"        : "video_07",
+    "faq 8"          : "video_07",
+    "faq8"           : "video_07",
+    "walk away"      : "video_07",
+
+    # video_08
+    "video 8"        : "video_08",
+    "video8"         : "video_08",
+    "faq 8th"        : "video_08",
+    "faq 9"          : "video_08",
+    "faq9"           : "video_08",
+    "ignore cra"     : "video_08",
+    "ignore payroll" : "video_08",
+
+    # video_09
+    "video 9"        : "video_09",
+    "video9"         : "video_09",
+    "faq 9th"        : "video_09",
+    "faq 10"         : "video_09",
+    "faq10"          : "video_09",
+    "who to turn"    : "video_09",
+    "who should i contact": "video_09",
+
+    # video_10
+    "video 10"       : "video_10",
+    "video10"        : "video_10",
+    "gobind"         : "video_10",
+    "gobind trades"  : "video_10",
+    "last video"     : "video_10",
+}
+
+
+def detect_video_filter(query: str) -> str | None:
+    """
+    Detect if query mentions a specific video.
+    Returns video_id string if found, None otherwise.
+    Checks longer phrases first to avoid partial matches.
+    """
+    query_lower = query.lower()
+
+    # Sort by length descending so longer phrases match first
+    # e.g. "video 10" matches before "video 1"
+    sorted_keys = sorted(VIDEO_MAP.keys(), key=len, reverse=True)
+
+    for key in sorted_keys:
+        if key in query_lower:
+            return VIDEO_MAP[key]
+
+    return None
+
 
 
 
 # ── Retrieve chunks
 def retrieve(query: str, collection, embedder, n: int = 4) -> list:
-
-    # Detect if this is a summary or broad question
-    # These need more chunks to give a complete answer
-    broad_keywords = [
-        "summarize", "summary", "mainly about", "what is video",
-        "what does video", "overview", "explain video", "tell me about",
-        "what topics", "what does faq", "all consequences",
-        "everything about", "what was discussed"
-    ]
-
-    is_broad = any(
-        keyword in query.lower()
-        for keyword in broad_keywords
-    )
-
-    # Use more chunks for broad/summary questions
-    fetch_n = 3 if is_broad else n
-
     emb = embedder.encode(
         query,
         normalize_embeddings=True
     ).tolist()
 
-    results = collection.query(
-        query_embeddings=[emb],
-        n_results=fetch_n
-    )
+    # Check if user is asking about a specific video
+    video_filter = detect_video_filter(query)
+
+    if video_filter:
+        # Filter ChromaDB to only return chunks from that video
+        results = collection.query(
+            query_embeddings=[emb],
+            n_results=n,
+            where={"video_id": {"$eq": video_filter}}
+        )
+    else:
+        # No filter — search across all videos
+        results = collection.query(
+            query_embeddings=[emb],
+            n_results=n
+        )
 
     chunks = []
     if results and results["documents"][0]:
@@ -226,13 +333,35 @@ def generate_answer(query: str, chunks: list, groq_client) -> str:
         for i, c in enumerate(chunks)
     ])
 
+    # Detect if this is a summary question
+    summary_keywords = [
+        "summarize", "summary", "mainly about",
+        "what is video", "what does video", "overview",
+        "tell me about", "what topics", "about video",
+        "explain video", "describe video"
+    ]
+    is_summary = any(k in query.lower() for k in summary_keywords)
+
+    if is_summary:
+        instruction = """The user wants a summary of the video content provided above.
+Read all the context carefully and provide a clear summary including:
+- Main topic of the video
+- Key points discussed
+- Important advice or information given
+Base your summary strictly on the provided context."""
+    else:
+        instruction = f"QUESTION: {query}"
+
     response = groq_client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": f"CONTEXT:\n{context}\n\nQUESTION: {query}"
+                "content": (
+                    f"CONTEXT:\n{context}\n\n"
+                    f"{instruction}"
+                )
             }
         ],
         temperature=0.0,
@@ -351,6 +480,8 @@ if search and query.strip():
 
     with st.spinner("Generating answer..."):
         answer_text = generate_answer(query, chunks, groq_client)
+    
+    
 
     # Save to history
     st.session_state.history.insert(0, {
